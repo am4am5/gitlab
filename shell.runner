@@ -1,0 +1,12 @@
+#install
+sudo gitlab-runner register -n \
+  --url https://gitlab.com/ \
+  --registration-token REGISTRATION_TOKEN \
+  --executor shell \
+  --description "My Runner"
+
+#rights  
+  sudo usermod -aG docker gitlab-runner
+  sudo -u gitlab-runner -H docker info
+  
+  
