@@ -1,0 +1,27 @@
+runners:
+  config: |
+    [[runners]]
+      executor = "kubernetes"
+      [runners.kubernetes]
+        image = "alpine:latest"
+        namespace = "aismv"
+        privileged = true
+        [runners.kubernetes.node_selector]
+          "kubernetes.io/hostname" = "k8s-jenkins-01"
+        [[runners.kubernetes.volumes.empty_dir]]
+        name = "docker-certs"
+        mount_path = "/certs/client"
+        medium = "Memory"
+        [[runners.kubernetes.volumes.pvc]]
+          mount_path = "/root/.m2"
+          name = "m2cache"
+          read_only = false
+      [runners.cache]
+        Type = "s3"
+        Shared = true
+        [runners.cache.s3]
+          ServerAddress = "core-minio-svc.s3:9000"
+          AccessKey = "*"
+          SecretKey = "*"
+          BucketName = "gitlabrunner"
+          Insecure = false
