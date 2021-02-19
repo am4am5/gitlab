@@ -1,9 +1,9 @@
 #install
 sudo gitlab-runner register -n \
-  --url https://gitlab.com/ \
+  --url https://gitoais.nces.by/ \
   --registration-token REGISTRATION_TOKEN \
   --executor shell \
-  --description "My Runner"
+  --description "Jenkins01"
 
 #rights  
   sudo usermod -aG docker gitlab-runner
