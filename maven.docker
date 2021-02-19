@@ -1,2 +1,3 @@
-docker run -it --rm -v "$PWD":/usr/src/aismv -v /home/gitlab-runner/.m2:/root/.m2 -v "$PWD/target:/usr/src/aismv/target" -w /usr/src/aismv maven:3.6.3-openjdk-8-slim mvn clean package
+
+CDIR = DynamicFormatSystem && docker run -it --rm -v "$PWD":/usr/src -v /home/gitlab-runner/.m2:/root/.m2 -v "$PWD/target:/usr/src/aismv/"$CDIR"/target" -w /usr/src/aismv/"$CDIR" maven:3.6.3-openjdk-8-slim mvn clean package
 
