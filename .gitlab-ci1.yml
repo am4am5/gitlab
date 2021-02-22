@@ -1,9 +1,12 @@
-image: registry.nces.by/aismv/docker:20.10.3
+image: "registry.nces.by/aismv/docker:20.10.3"
 
 services:
-  - docker:20.10.3-dind
-  - maven:3.6.3-openjdk-8-slim
-  - kubectl:1.20.2
+  - name: "registry.nces.by/aismv/docker:20.10.3-dind"
+    alias: dind
+  - name: "registry.nces.by/aismv/maven:3.6.3-openjdk-8-slim"
+    alias: maven
+  - name: "registry.nces.by/aismv/kubectl:1.20.4-debian-10-r3"
+    alias: kube
 
 variables:
   DOCKER_HOST: tcp://docker:2375
@@ -20,7 +23,7 @@ before_script:
   - docker info
 
 compile:
-  image: maven:3.6.3-openjdk-8-slim
+  image: "registry.nces.by/aismv/maven:3.6.3-openjdk-8-slim"
   stage: compile-test
   script:
     - docker run -it --rm -v "$PWD":/usr/src -v aismv-misc-m2cache:/root/.m2 -v "$PWD/target:/usr/src/aismv/"$CDIR"/target" -w /usr/src/aismv/"$CDIR" maven:3.6.3-openjdk-8-slim mvn clean package
@@ -34,9 +37,9 @@ build:
 
 deploy:
   stage: deploy-k8s
-  image: kubectl:1.20.2
+  image: "registry.nces.by/aismv/kubectl:1.20.4-debian-10-r3"
   script:
-    - kubectl set image deployment/aismv-back-dfs aismv-back-dfs=registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -n aismv --kubeconfig /opt/tomcat/.jenkins/nces.kube
+    - docker run --rm --name kubectl -v /path/to/your/kube/config:/.kube/config kubectl set image deployment/aismv-back-dfs aismv-back-dfs=registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -n aismv --kubeconfig /opt/tomcat/.jenkins/nces.kube
     only:
     - master
 
