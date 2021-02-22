@@ -2,16 +2,18 @@ image: registry.nces.by/aismv/docker:20.10.3
 
 services:
   - docker:20.10.3-dind
+  - maven:3.6.3-openjdk-8-slim
+  - kubectl:1.20.2
 
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_VERIFY: 0
   DOCKER_TLS_CERTDIR: ""
+  CDIR: "DynamicFormatSystem"
 
 stages:
   - compile-test
-  - build-docker
-  - push-docker
+  - build-push-docker
   - deploy-k8s
 
 before_script:
@@ -21,14 +23,14 @@ compile:
   image: maven:3.6.3-openjdk-8-slim
   stage: compile-test
   script:
-    - docker build --pull -t $CONTAINER_TEST_IMAGE .
-    - docker push $CONTAINER_TEST_IMAGE
-
+    - docker run -it --rm -v "$PWD":/usr/src -v aismv-misc-m2cache:/root/.m2 -v "$PWD/target:/usr/src/aismv/"$CDIR"/target" -w /usr/src/aismv/"$CDIR" maven:3.6.3-openjdk-8-slim mvn clean package
+    
 build:
-  stage: build-docker
+  stage: build-push-docker
   script:
-    - docker build --pull -t $CONTAINER_TEST_IMAGE .
-    - docker push $CONTAINER_TEST_IMAGE
+    - docker build -t registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER -f Dockerfile_nces .
+    - docker push registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER
+    - docker rmi registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER
 
 
 release-image:
