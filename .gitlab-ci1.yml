@@ -21,27 +21,30 @@ stages:
 before_script:
   - docker info
 
-compile:
+compile_DynamicFormatSystem:
   image: "registry.nces.by/aismv/maven:3.6.3-openjdk-8-slim"
   stage: compile-test
+  only:
+    changes:
+      - "DynamicFormatSystem/**/*"
   cache:
     paths:
       - .m2/repository
   artifacts:
     paths:
-      - target/"$CAF"
+      - target/DynamicFormatSystem-0.0.1-SNAPSHOT.jar
   script:
-    - cd aismv/"$CAPP"
+    - cd DynamicFormatSystem
     - mvn clean package
-    - cp -f ./application/target/"$CAF" ./"$CSN".jar
+    - cp -f ./application/target/DynamicFormatSystem-0.0.1-SNAPSHOT.jar ./dfs.jar
     
-build_prod:
+build_DynamicFormatSystem:
   stage: build-push-docker
   script:
-    - docker build -t registry.nces.by/aismv/back/aismv-back-"$CSN":$CI_JOB_ID -f Dockerfile_nces .
-    - docker push registry.nces.by/aismv/back/aismv-back-"$CSN":$CI_JOB_ID
+    - docker build -t registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -f Dockerfile_nces .
+    - docker push registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID
     
-deploy_prod:
+deploy_DynamicFormatSystem:
   stage: deploy-k8s
   image: "registry.nces.by/aismv/kubectl:1.20.4-debian-10-r3"
   environment:
