@@ -1,6 +1,6 @@
-image: docker:19.03.12
+image: docker:20.10.3
 services:
-  - docker:19.03.12-dind
+  - docker:20.10.3-dind
 
 stages:
   - build
@@ -9,9 +9,8 @@ stages:
   - deploy
 
 variables:
-  # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
-  DOCKER_HOST: tcp://docker:2376
-  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
