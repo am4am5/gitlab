@@ -32,19 +32,11 @@ build:
     - docker push registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER
     - docker rmi registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER
 
-
-release-image:
-  stage: release
-  script:
-    - docker pull $CONTAINER_TEST_IMAGE
-    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-    - docker push $CONTAINER_RELEASE_IMAGE
-  only:
-    - master
-
 deploy:
-  stage: deploy
+  stage: deploy-k8s
+  image: kubectl:1.20.2
   script:
-    - ./deploy.sh
-  only:
+    - kubectl set image deployment/aismv-back-dfs aismv-back-dfs=registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER -n aismv --kubeconfig /opt/tomcat/.jenkins/nces.kube
+    only:
     - master
+
