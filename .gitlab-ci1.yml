@@ -28,15 +28,15 @@ compile:
 build:
   stage: build-push-docker
   script:
-    - docker build -t registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER -f Dockerfile_nces .
-    - docker push registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER
-    - docker rmi registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER
+    - docker build -t registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -f Dockerfile_nces .
+    - docker push registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID
+    - docker rmi registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID
 
 deploy:
   stage: deploy-k8s
   image: kubectl:1.20.2
   script:
-    - kubectl set image deployment/aismv-back-dfs aismv-back-dfs=registry.nces.by/aismv/back/aismv-back-dfs:$BUILD_NUMBER -n aismv --kubeconfig /opt/tomcat/.jenkins/nces.kube
+    - kubectl set image deployment/aismv-back-dfs aismv-back-dfs=registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -n aismv --kubeconfig /opt/tomcat/.jenkins/nces.kube
     only:
     - master
 
