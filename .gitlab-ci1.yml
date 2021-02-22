@@ -3,16 +3,14 @@ image: "registry.nces.by/aismv/docker:20.10.3"
 services:
   - name: "registry.nces.by/aismv/docker:20.10.3-dind"
     alias: dind
-  - name: "registry.nces.by/aismv/maven:3.6.3-openjdk-8-slim"
-    alias: maven
-  - name: "registry.nces.by/aismv/kubectl:1.20.4-debian-10-r3"
-    alias: kube
 
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_VERIFY: 0
   DOCKER_TLS_CERTDIR: ""
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   CDIR: "DynamicFormatSystem"
+  CAF: "DynamicFormatSystem-0.0.1-SNAPSHOT.jar"
 
 stages:
   - compile-test
@@ -25,8 +23,15 @@ before_script:
 compile:
   image: "registry.nces.by/aismv/maven:3.6.3-openjdk-8-slim"
   stage: compile-test
+  cache:
+    paths:
+      - .m2/repository
+  artifacts:
+    paths:
+      - target/"$CAF"
   script:
-    - docker run -it --rm -v "/builds/govby":/usr/src -v aismv-misc-m2cache:/root/.m2 -w /usr/src/aismv/"$CDIR" maven:3.6.3-openjdk-8-slim mvn clean package
+    - cd /usr/src/aismv/"$CDIR"
+    - aismv-misc-m2cache:/root/.m2 mvn clean package
     
 build:
   stage: build-push-docker
@@ -39,7 +44,7 @@ deploy:
   stage: deploy-k8s
   image: "registry.nces.by/aismv/kubectl:1.20.4-debian-10-r3"
   script:
-    - docker run --rm --name kubectl -v /path/to/your/kube/config:/.kube/config kubectl set image deployment/aismv-back-dfs aismv-back-dfs=registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -n aismv --kubeconfig /opt/tomcat/.jenkins/nces.kube
+    - kubectl set image deployment/aismv-back-dfs aismv-back-dfs=registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -n aismv
     only:
     - master
 
