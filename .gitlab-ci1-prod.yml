@@ -1,13 +1,13 @@
 .extra-vars:
   variables:
+    - APPMVN: "maven:3.6.3-openjdk-8-slim"
+    - APPKUBE: "kubectl:1.20.4-debian-10-r3"
     - APP: "DynamicFormatSystem"
     - APPSN: "dfs"
     - APPART: "DynamicFormatSystem-0.0.1-SNAPSHOT.jar"
     - APPT: "back'
     - APPSTG: "prod"
     - APPNS: "aismv"
-    - APPMVN: "maven:3.6.3-openjdk-8-slim"
-    - APPKUBE: "kubectl:1.20.4-debian-10-r3"
 
 compile:
   image: "registry.nces.by/$APPNS/$APPMVN"
@@ -45,4 +45,5 @@ deploy:
     - kubectl set image deployment/$APPNS-$APPT-$APPSN $APPNS-$APPT-$APPSN=registry.nces.by/$APPNS/$APPT/$APPNS-$APPT-$APPSN:$CI_JOB_ID -n $APPNS
   needs:
     - job: build
+      artifacts: false
 
