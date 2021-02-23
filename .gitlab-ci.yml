@@ -23,6 +23,7 @@ cache:
 before_script:
   - docker info
   - git config --global http.sslVerify false
+  - export
 
 include:
   - local: "DynamicFormatSystem/.gitlab-ci-prod.yml"
