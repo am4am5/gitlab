@@ -4,11 +4,10 @@
     - APPSN: "dfs"
     - APPART: "DynamicFormatSystem-0.0.1-SNAPSHOT.jar"
     - APPT: "back'
-    - APPNS: "aismv"
-
+    
 compile:
   extends: .extravars
-  image: 'registry.nces.by/$APPNS/$APPMVN'
+  image: '$APPMVN'
   stage: compile-test
   only:
     refs:
@@ -23,14 +22,14 @@ compile:
   script:
     - cd $APP
     - mvn clean package
-    - cp -f './application/target/$APPART ./$APPSN.jar'
+    - 'cp -f ./application/target/$APPART ./$APPSN.jar'
         
 build:
   extends: .extravars
   stage: build-push-docker
   script:
-    - docker build -t registry.nces.by/$APPNS/$APPT/$APPNS-$APPT-$APPSN:$CI_JOB_ID -f Dockerfile_nces .
-    - docker push registry.nces.by/$APPNS/$APPT/$APPNS-$APPT-$APPSN:$CI_JOB_ID
+    - 'docker build -t registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -f Dockerfile_nces .'
+    - 'docker push registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID'
   needs:
     - job: compile
       artifacts: true
@@ -38,9 +37,9 @@ build:
 deploy:
   extends: .extravars
   stage: deploy-k8s
-  image: 'registry.nces.by/$APPNS/$APPKUBE'
+  image: '$APPKUBE'
   script:
-    - kubectl set image deployment/$APPNS-$APPT-$APPSN $APPNS-$APPT-$APPSN=registry.nces.by/$APPNS/$APPT/$APPNS-$APPT-$APPSN:$CI_JOB_ID -n $APPNS
+    - 'kubectl set image deployment/aismv-$APPT-$APPSN aismv-$APPT-$APPSN=registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -n aismv'
   needs:
     - job: build
       artifacts: false
