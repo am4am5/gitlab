@@ -1,12 +1,12 @@
-.extravars:
+.extravars-dfs-dev:
   variables:
     - APP: "DynamicFormatSystem"
     - APPSN: "dfs"
     - APPART: "DynamicFormatSystem-0.0.1-SNAPSHOT.jar"
     - APPT: "back'
     
-compile-dfs:
-  extends: .extravars
+compile-dfs-dev:
+  extends: .extravars-dfs-dev
   image: '$APPMVN'
   stage: compile-test
   only:
@@ -24,8 +24,8 @@ compile-dfs:
     - mvn clean package
     - 'cp -f ./application/target/$APPART ./$APPSN.jar'
         
-build-dfs:
-  extends: .extravars
+build-dfs-dev:
+  extends: .extravars-dfs-dev
   stage: build-push-docker
   script:
     - 'docker build -t registry.nces.by/aismvdev/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -f Dockerfile_aismv .'
@@ -34,8 +34,8 @@ build-dfs:
     - job: compile
       artifacts: true
       
-deploy-dfs:
-  extends: .extravars
+deploy-dfs-dev:
+  extends: .extravars-dfs-dev
   stage: deploy-k8s
   image: '$APPKUBE'
   script:
