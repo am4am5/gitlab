@@ -5,8 +5,9 @@ runners:
     [[runners]]
       executor = "kubernetes"
       [runners.kubernetes]
-        image = "alpine:latest"
-        namespace = "aismv"
+        helper_image = "registry.nces.by/aismv/gitlab-runner-helper:x86_64-v13.9.0"
+        image = "registry.nces.by/aismv/alpine:3.13.2"
+        namespace = "aismvdev"
         privileged = true
         [[runners.kubernetes.host_aliases]]
           ip = "10.111.2.100"
