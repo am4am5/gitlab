@@ -1,6 +1,5 @@
 .extravars:
   variables:
-    - APPKUBE: ""
     - APP: "DynamicFormatSystem"
     - APPSN: "dfs"
     - APPART: "DynamicFormatSystem-0.0.1-SNAPSHOT.jar"
@@ -9,7 +8,7 @@
 
 compile:
   extends: .extravars
-  image: 'registry.nces.by/$APPNS/maven:3.6.3-openjdk-8-slim'
+  image: 'registry.nces.by/$APPNS/$APPMVN'
   stage: compile-test
   only:
     refs:
@@ -39,7 +38,7 @@ build:
 deploy:
   extends: .extravars
   stage: deploy-k8s
-  image: 'registry.nces.by/$APPNS/kubectl:1.20.4-debian-10-r3'
+  image: 'registry.nces.by/$APPNS/$APPKUBE'
   script:
     - kubectl set image deployment/$APPNS-$APPT-$APPSN $APPNS-$APPT-$APPSN=registry.nces.by/$APPNS/$APPT/$APPNS-$APPT-$APPSN:$CI_JOB_ID -n $APPNS
   needs:
