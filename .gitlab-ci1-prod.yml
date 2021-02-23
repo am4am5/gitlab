@@ -1,0 +1,41 @@
+.dfs-vars:
+  variables:
+    - APP: "DynamicFormatSystem"
+    - APPSN: "dfs"
+    - APPART: "DynamicFormatSystem-0.0.1-SNAPSHOT.jar"
+    - APPT: "back'
+
+compile:
+  image: "registry.nces.by/aismv/maven:3.6.3-openjdk-8-slim"
+  stage: compile-test
+  only:
+    changes:
+      - "$APP"/**/*"
+  artifacts:
+    paths:
+      - target/"$APPART"
+  script:
+    - cd "$APP"
+    - mvn clean package
+    - cp -f ./application/target/"$APPART" ./"$APPSN".jar
+    only:
+    - master
+    
+build:
+  stage: build-push-docker
+  script:
+    - docker build -t registry.nces.by/aismv/"$APPT"/aismv-"$APPT"-"$APPSN":$CI_JOB_ID -f Dockerfile_nces .
+    - docker push registry.nces.by/aismv/"$APPT"/aismv-"$APPT"-"$APPSN":$CI_JOB_ID
+    only:
+    - master
+    
+deploy_DynamicFormatSystem:
+  stage: deploy-k8s
+  image: "registry.nces.by/aismv/kubectl:1.20.4-debian-10-r3"
+  environment:
+    name: prod
+  script:
+    - kubectl set image deployment/aismv-"$APPT"-"$APPSN" aismv-"$APPT"-"$APPSN"=registry.nces.by/aismv/"$APPT"/aismv-"$APPT"-"$APPSN":$CI_JOB_ID -n aismv
+    only:
+    - master
+
