@@ -28,7 +28,7 @@ build:
   extends: .extravars
   stage: build-push-docker
   script:
-    - 'docker build -t registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -f Dockerfile_nces .'
+    - 'docker build -t registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -f Dockerfile_aismv .'
     - 'docker push registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID'
   needs:
     - job: compile
@@ -39,7 +39,7 @@ deploy:
   stage: deploy-k8s
   image: '$APPKUBE'
   script:
-    - 'kubectl set image deployment/aismv-$APPT-$APPSN aismv-$APPT-$APPSN=registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -n aismv'
+    - 'kubectl set image deployment/aismv-$APPT-$APPSN aismv-$APPT-$APPSN=registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -n aismvdev'
   needs:
     - job: build
       artifacts: false
