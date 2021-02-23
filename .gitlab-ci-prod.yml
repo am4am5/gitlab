@@ -1,4 +1,4 @@
-.extra-vars:
+.extravars:
   variables:
     - APPMVN: "maven:3.6.3-openjdk-8-slim"
     - APPKUBE: "kubectl:1.20.4-debian-10-r3"
@@ -10,6 +10,7 @@
     - APPNS: "aismv"
 
 compile:
+  extends: .extravars
   image: "registry.nces.by/$APPNS/$APPMVN"
   stage: compile-test
   only:
@@ -30,6 +31,7 @@ compile:
     - cp -f ./application/target/$APPART ./$APPSN.jar
         
 build:
+  extends: .extravars
   stage: build-push-docker
   script:
     - docker build -t registry.nces.by/$APPNS/$APPT/$APPNS-$APPT-$APPSN:$CI_JOB_ID -f Dockerfile_nces .
@@ -39,6 +41,7 @@ build:
       artifacts: true
       
 deploy:
+  extends: .extravars
   stage: deploy-k8s
   image: "registry.nces.by/$APPNS/$APPKUBE"
   script:
