@@ -1,0 +1,29 @@
+image: "registry.nces.by/aismv/docker:20.10.3"
+
+services:
+  - name: "registry.nces.by/aismv/docker:20.10.3-dind"
+    alias: dind
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_VERIFY: 0
+  DOCKER_TLS_CERTDIR: ""
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  
+stages:
+  - compile-test
+  - build-push-docker
+  - deploy-k8s
+  
+cache:
+  key: java
+  paths:
+    - .m2/repository
+   
+before_script:
+  - docker info
+  - git config --global http.sslVerify false
+
+include:
+  - local: "DynamicFormatSystem/.gitlab-ci-prod.yml"
+  
