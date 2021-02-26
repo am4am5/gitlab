@@ -28,5 +28,5 @@ before_script:
   - export
 
 include:
-  - local: "DynamicFormatSystem/.gitlab-ci-prod.yml"
+  - local: "devops/cicd/aismv-back-dfs.yml"
   
