@@ -1,45 +1,37 @@
-.extravars-dfs-prod:
-  variables:
-    - APP: "DynamicFormatSystem"
-    - APPSN: "dfs"
-    - APPART: "DynamicFormatSystem-0.0.1-SNAPSHOT.jar"
-    - APPT: "back'
-    
 compile-dfs-prod:
-  extends: .extravars-dfs-prod
   image: '$APPMVN'
+  entrypoint: [""]
   stage: compile-test
   only:
     refs:
       - master
       - schedules
     changes:
-      - "$APP/**/*"
+      - "DynamicFormatSystem/**/*"
   artifacts:
     paths:
-      - 'target/$APPART'
+      - 'target/DynamicFormatSystem-0.0.1-SNAPSHOT.jar'
     expire_in: 1 day
   script:
-    - cd $APP
+    - cd DynamicFormatSystem
     - mvn clean package
-    - 'cp -f ./application/target/$APPART ./$APPSN.jar'
+    - 'cp -f ./application/target/DynamicFormatSystem-0.0.1-SNAPSHOT.jar ./dfs.jar'
         
 build-dfs-prod:
-  extends: .extravars-dfs-prod
   stage: build-push-docker
   script:
-    - 'docker build -t registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -f Dockerfile_nces .'
-    - 'docker push registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID'
+    - 'docker build -t registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -f Dockerfile_nces .'
+    - 'docker push registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID'
   needs:
     - job: compile
       artifacts: true
       
 deploy-dfs-prod:
-  extends: .extravars-dfs-prod
   stage: deploy-k8s
   image: '$APPKUBE'
+  entrypoint: [""]
   script:
-    - 'kubectl set image deployment/aismv-$APPT-$APPSN aismv-$APPT-$APPSN=registry.nces.by/aismv/$APPT/aismv-$APPT-$APPSN:$CI_JOB_ID -n aismv'
+    - 'kubectl set image deployment/aismv-back-dfs aismv-back-dfs=registry.nces.by/aismv/back/aismv-back-dfs:$CI_JOB_ID -n aismv'
   needs:
     - job: build
       artifacts: false
