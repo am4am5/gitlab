@@ -28,5 +28,5 @@ before_script:
   - export
 
 include:
-  - local: "devops/cicd/aismv-back-dfs.yml"
+  - local: "devops/cicd/prod/aismv-back-dfs.yml"
   
