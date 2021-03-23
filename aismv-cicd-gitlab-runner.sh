@@ -1,0 +1,1 @@
+helm install -n aismv aismv-cicd-gitlab-runner gitlab/gitlab-runner -f aismv-cicd-gitlab-runner.yml
