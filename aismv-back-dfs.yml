@@ -1,0 +1,49 @@
+compile-dfs-prod:
+  image: 
+    name: '$APPMVN'
+    entrypoint: [""]
+  stage: compile-test
+  only:
+    refs:
+      - master
+      - schedules
+    changes:
+      - "DynamicFormatSystem/**/*"
+  artifacts:
+    paths:
+      - 'DynamicFormatSystem/application/target/DynamicFormatSystem-0.0.1-SNAPSHOT.jar'
+    expire_in: 1 day
+  script:
+    - cd DynamicFormatSystem
+    - mvn clean package -Dspring.profiles.active=nces
+        
+build-dfs-prod:
+  stage: build-push-docker
+  only:
+    refs:
+      - master
+      - schedules
+    changes:
+      - "DynamicFormatSystem/**/*"
+  script:
+    - 'cd devops/dockerfiles/prod'
+    - 'cp -f ../../../DynamicFormatSystem/application/target/DynamicFormatSystem-0.0.1-SNAPSHOT.jar ./dfs.jar'
+    - 'docker login --username $REGISTRY_USERNAME --password $REGISTRY_PASSWORD $REGISTRY'
+    - 'docker build -t $REGISTRY/aismv/back/aismv-back-dfs:$CI_PIPELINE_ID -f aismv-back-dfs .'
+    - 'docker push $REGISTRY/aismv/back/aismv-back-dfs:$CI_PIPELINE_ID'
+      
+deploy-dfs-prod:
+  stage: deploy-k8s
+  only:
+    refs:
+      - master
+      - schedules
+    changes:
+      - "DynamicFormatSystem/**/*"
+  image:
+    name: '$APPKUBE'
+    entrypoint: [""]
+  environment:
+    name: prod
+  script:
+    - 'kubectl --insecure-skip-tls-verify set image deployment/aismv-back-dfs aismv-back-dfs=$REGISTRY/aismv/back/aismv-back-dfs:$CI_PIPELINE_ID -n aismv'
