@@ -1,3 +1,5 @@
 
 
 qemu-img convert -f vmdk -O qcow2 bitnami-gitlab-13.11.3-0-linux-debian-10-x86_64-disk1.vmdk gitlab.qcow2
+
+virt-install --connect=qemu:///system -n gate -r 2048 --vcpus=2 --import --disk path=/home/gate1.qcow2,format=qcow2,bus=virtio --vnc --noautoconsole --os-type=linux --accelerate --network=bridge:br0,model=virtio --network=bridge:br1,model=virtio --network=bridge:br2,model=virtio
