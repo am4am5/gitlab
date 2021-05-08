@@ -1,0 +1,3 @@
+
+
+qemu-img convert -f vmdk -O qcow2 bitnami-gitlab-13.11.3-0-linux-debian-10-x86_64-disk1.vmdk gitlab.qcow2
