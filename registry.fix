@@ -1,3 +1,6 @@
 export GODEBUG=x509ignoreCN=0
 
 podman --tls-verify=false
+
+#add to [registries.insecure]
+/etc/containers/registries.conf
