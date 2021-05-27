@@ -1,0 +1,1 @@
+kubectl -n gitlab exec -it <pod> -- registry garbage-collect -m /etc/docker/registry/config.yml
