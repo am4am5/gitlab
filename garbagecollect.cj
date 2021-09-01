@@ -50,7 +50,7 @@ kind: CronJob
 metadata:
   name: garbagecollect
 spec:
-  schedule: "0 5 * * 7"
+  schedule: "0 5 * * 0"
   jobTemplate:
     spec:
       template:
