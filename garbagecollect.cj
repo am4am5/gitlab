@@ -1,7 +1,13 @@
+ncdu /var/nfs2
+
 kubectl -n gitlab exec -it <pod> -- registry garbage-collect -m /etc/docker/registry/config.yml
 
 kubectl -n gitlab exec -it `kubectl get pods -n gitlab -l app=registry -o jsonpath='{.items[0].metadata.name}'` -- registry garbage-collect -m /etc/docker/registry/config.yml
 
+#Test CJ
+kubectl -n gitlab create job --from=cronjob/garbagecollect garbagecollect01
+
+#garbagecollect.yml
 
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
