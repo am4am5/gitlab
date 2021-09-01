@@ -1,3 +1,9 @@
 #Application properties
 
 curl -k --request PUT --header "PRIVATE-TOKEN: 5pRd2UY7FJ7TQ1m7zq9x" "https://gitlab.edo.iba/api/v4/application/settings?signup_enabled=false&container_expiration_policies_enable_historic_entries=true"
+
+
+#Policy
+curl -k --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: 5pRd2UY7FJ7TQ1m7zq9x" \
+     --data-binary '{"container_expiration_policy_attributes":{"cadence":"1d","enabled":true,"keep_n":1,"older_than":"1d","name_regex":"","name_regex_delete":".*","name_regex_keep":""}}' \
+     "https://gitlab.edo.iba/api/v4/projects/2"
