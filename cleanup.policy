@@ -1,3 +1,3 @@
 #Application properties
 
-curl --request PUT --header "PRIVATE-TOKEN: 5pRd2UY7FJ7TQ1m7zq9x" "https://gitlab.edo.iba/api/v4/application/settings?signup_enabled=false&container_expiration_policies_enable_historic_entries=true"
+curl -k --request PUT --header "PRIVATE-TOKEN: 5pRd2UY7FJ7TQ1m7zq9x" "https://gitlab.edo.iba/api/v4/application/settings?signup_enabled=false&container_expiration_policies_enable_historic_entries=true"
