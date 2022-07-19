@@ -27,3 +27,6 @@ subjects:
 - kind: ServiceAccount
   name: gitlab-runner
   namespace: gitlab
+
+
+#spec.template.spec.serviceAccountName=gitlab-runner
