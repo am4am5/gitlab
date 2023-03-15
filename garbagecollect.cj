@@ -49,6 +49,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: garbagecollect
+  namespace: gitlab
 spec:
   schedule: "0 5 * * 0"
   jobTemplate:
@@ -58,9 +59,11 @@ spec:
           serviceAccountName: sa-garbagecollect
           containers:
           - name: garbagecollect
-            image: registry2.edo.iba/edo/gtb/kubectl:1.22.1-debian-10-r12
+            image: registry.edo.iba/edo/next/kubectl:1.24.2-debian-11-r2
             command:
             - /bin/sh
             - -c
             - kubectl -n gitlab exec -it `kubectl get pods -n gitlab -l app=registry -o jsonpath='{.items[0].metadata.name}'` -- registry garbage-collect -m /etc/docker/registry/config.yml
+          imagePullSecrets:
+          - name: reg-cred
           restartPolicy: OnFailure
