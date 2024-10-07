@@ -1,0 +1,1 @@
+git config --global user.name "Maxim Alexandrov" && git config --global user.email "malexandrov@mdait.by" && git config --global http.sslVerify false
