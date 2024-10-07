@@ -1,1 +1,1 @@
-git config --global user.name "Maxim Alexandrov" && git config --global user.email "malexandrov@mdait.by" && git config --global http.sslVerify false
+dnf install -y git && git config --global user.name "Maxim Alexandrov" && git config --global user.email "malexandrov@mdait.by" && git config --global http.sslVerify false && git config --global core.editor nano
